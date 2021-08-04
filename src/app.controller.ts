@@ -14,34 +14,16 @@ export class AppController {
 
   @Post('post-job')
   postJob(@Body() job: SimpleJob): SimpleJobResponse {
-    const { name, msg, timestamp } = job
-    const date = new Date(timestamp)
-    console.log(`post-job: ${name} sends ${msg} on ${date}`)
-    return {
-      name: 'post-job',
-      success: true,
-    }
+    return this.appService.printMessage('post-job', job)
   }
 
   @Patch('patch-job')
   patchJob(@Body() job: SimpleJob): SimpleJobResponse {
-    const { name, msg, timestamp } = job
-    const date = new Date(timestamp)
-    console.log(`patch-job: ${name} sends ${msg} on ${date}`)
-    return {
-      name: 'patch-job',
-      success: true,
-    }
+    return this.appService.printMessage('patch-job', job)
   }
 
   @Put('put-job')
   putchJob(@Body() job: SimpleJob): SimpleJobResponse {
-    const { name, msg, timestamp } = job
-    const date = new Date(timestamp)
-    console.log(`put-job: ${name} sends ${msg} on ${date}`)
-    return {
-      name: 'put-job',
-      success: true,
-    }
+    return this.appService.printMessage('put-job', job)
   }
 }
