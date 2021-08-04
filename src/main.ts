@@ -24,7 +24,6 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService)
   const port = configService.get<number>('PORT', 0)
-  console.log('port', port)
   await app.listen(port)
 }
 bootstrap()
