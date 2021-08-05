@@ -7,6 +7,7 @@ export class TaskService {
 
   @Cron('*/15 * * * * *')
   async handlePostJob(): Promise<void> {
+    try {
     await this.httpService
       .post('http://localhost:3000/post-job', {
         name: 'connie',
@@ -14,10 +15,14 @@ export class TaskService {
         timestamp: Date.now(),
       })
       .toPromise()
+    } catch (err) {
+      console.error(err)
+  }
   }
 
   @Cron('*/20 * * * * *')
   async handlePatchJob(): Promise<void> {
+    try {
     await this.httpService
       .patch('http://localhost:3000/patch-job', {
         name: 'connie',
@@ -25,10 +30,14 @@ export class TaskService {
         timestamp: Date.now(),
       })
       .toPromise()
+    } catch (err) {
+      console.error(err)
+  }
   }
 
   @Cron('*/30 * * * * *')
   async handlePutJob(): Promise<void> {
+    try {
     await this.httpService
       .put('http://localhost:3000/put-job', {
         name: 'connie',
@@ -36,5 +45,7 @@ export class TaskService {
         timestamp: Date.now(),
       })
       .toPromise()
+    } catch (err) {
+      console.error(err)
   }
 }
