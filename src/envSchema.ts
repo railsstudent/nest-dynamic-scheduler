@@ -8,4 +8,5 @@ export const validationSchema = Joi.object({
   POST_JOB_INTERVAL: Joi.string().default(DEFAULT_JOB_INTERVAL),
   PATCH_JOB_INTERVAL: Joi.string().default(DEFAULT_JOB_INTERVAL),
   PUT_JOB_INTERVAL: Joi.string().default(DEFAULT_JOB_INTERVAL),
+  BASE_URL: Joi.string().required()
 })

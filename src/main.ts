@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core'
-import { AppModule } from './app.module'
 import helmet = require('helmet')
 import * as compression from 'compression'
 import * as morgan from 'morgan'
@@ -7,6 +6,8 @@ import * as cors from 'cors'
 import * as express from 'express'
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { AppModule } from './app.module'
+import { TaskService } from './task/task.service'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -25,5 +26,10 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
   const port = configService.get<number>('PORT', 0)
   await app.listen(port)
+
+  const taskService = app.get(TaskService)
+  await taskService.addCronJobs()
 }
 bootstrap()
+  .then(() => console.log('Application started successfully'))
+  .catch(console.error)
