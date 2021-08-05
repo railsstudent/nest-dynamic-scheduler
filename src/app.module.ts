@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { ScheduleModule } from '@nestjs/schedule'
 import * as Joi from 'joi'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
@@ -15,7 +14,6 @@ import { TaskModule } from './task'
         PORT: Joi.number().default(3001),
       }),
     }),
-    ScheduleModule.forRoot(),
     TaskModule,
   ],
   controllers: [AppController],

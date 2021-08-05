@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { SimpleJob } from './dtos'
-import { SimpleJobResponse } from './interfaces'
 
 @Injectable()
 export class AppService {
@@ -8,13 +7,9 @@ export class AppService {
     return 'Hello World!'
   }
 
-  printMessage(identifier: string, job: SimpleJob): SimpleJobResponse {
+  printMessage(identifier: string, job: SimpleJob): void {
     const { name, msg, timestamp } = job
     const date = new Date(timestamp)
-    console.log(`${identifier}: ${name} sends ${msg} on ${date}`)
-    return {
-      name: identifier,
-      success: true,
-    }
+    console.log(`${identifier}: ${name} sends ${msg} on ${date.toISOString()}`)
   }
 }
