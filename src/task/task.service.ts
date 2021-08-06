@@ -2,17 +2,9 @@ import { ConfigService } from '@nestjs/config'
 import { HttpService, Injectable } from '@nestjs/common'
 import { SchedulerRegistry } from '@nestjs/schedule'
 import { CronJob } from 'cron'
-import { Method } from 'axios'
+import { JobConfiguration } from './interfaces'
 
 const defaultInterval = '* * * * * *'
-
-interface JobConfiguration {
-  url: string
-  interval: string
-  method: Method
-  dataFn: () => any
-  name: string
-}
 
 @Injectable()
 export class TaskService {
@@ -166,28 +158,27 @@ export class TaskService {
     putJob.start()
   }
 
-  addConfigurableCronJobs(): void {
-    const callbackGenerator = (configuration: JobConfiguration) => {
-      const { url, method, dataFn } = configuration
-      return async () => {
-        try {
-          const data = dataFn()
-          await this.httpService
-            .request({
-              url,
-              method,
-              data,
-            })
-            .toPromise()
-        } catch (err) {
-          console.error(err)
-        }
+  private callbackGenerator(configuration: JobConfiguration): () => Promise<void> {
+    const { url, method, dataFn } = configuration
+    return async () => {
+      try {
+        await this.httpService
+          .request({
+            url,
+            method,
+            data: dataFn(),
+          })
+          .toPromise()
+      } catch (err) {
+        console.error(err)
       }
     }
+  }
 
+  addConfigurableCronJobs(): void {
     for (const configuration of this.jobConfigurations) {
       const { interval, name } = configuration
-      const callback = callbackGenerator(configuration)
+      const callback = this.callbackGenerator(configuration)
       const cronjob = new CronJob(interval, callback)
       this.schedulerRegistry.addCronJob(name, cronjob)
       cronjob.start()
