@@ -10,7 +10,7 @@ interface JobConfiguration {
   url: string
   interval: string
   method: Method
-  dataFn: (...args: unknown[]) => any
+  dataFn: () => any
   name: string
 }
 
@@ -167,11 +167,11 @@ export class TaskService {
   }
 
   addConfigurableCronJobs(): void {
-    const callbackGenerator = (configuration: JobConfiguration, args?: unknown[]) => {
+    const callbackGenerator = (configuration: JobConfiguration) => {
       const { url, method, dataFn } = configuration
-      const data = args ? dataFn(args) : dataFn()
       return async () => {
         try {
+          const data = dataFn()
           await this.httpService
             .request({
               url,
