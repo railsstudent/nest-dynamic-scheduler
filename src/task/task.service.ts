@@ -10,6 +10,7 @@ export class TaskService {
   private readonly postJobInterval: string
   private readonly patchJobInterval: string
   private readonly putJobInterval: string
+  private readonly baseUrl: string
 
   constructor(
     private httpService: HttpService,
@@ -19,6 +20,7 @@ export class TaskService {
     this.postJobInterval = this.configService.get<string>('POST_JOB_INTERVAL', defaultInterval)
     this.patchJobInterval = this.configService.get<string>('PATCH_JOB_INTERVAL', defaultInterval)
     this.putJobInterval = this.configService.get<string>('PUT_JOB_INTERVAL', defaultInterval)
+    this.baseUrl = this.configService.get<string>('BASE_URL', '')
   }
 
   // @Cron('*/15 * * * * *')
@@ -70,7 +72,7 @@ export class TaskService {
     const postJob = new CronJob(this.postJobInterval, async () => {
       try {
         await this.httpService
-          .post('http://localhost:3000/post-job', {
+          .post(`${this.baseUrl}/post-job`, {
             name: 'connie',
             msg: 'schedule post job every 15 second',
             timestamp: Date.now(),
@@ -84,7 +86,7 @@ export class TaskService {
     const patchJob = new CronJob(this.patchJobInterval, async () => {
       try {
         await this.httpService
-          .patch('http://localhost:3000/patch-job', {
+          .patch(`${this.baseUrl}/patch-job`, {
             name: 'connie',
             msg: 'schedule patch job every 20 second',
             timestamp: Date.now(),
@@ -98,7 +100,7 @@ export class TaskService {
     const putJob = new CronJob(this.putJobInterval, async () => {
       try {
         await this.httpService
-          .put('http://localhost:3000/put-job', {
+          .put(`${this.baseUrl}/put-job`, {
             name: 'connie',
             msg: 'schedule put job every 30 second',
             timestamp: Date.now(),
