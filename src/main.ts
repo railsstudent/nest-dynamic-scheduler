@@ -28,7 +28,8 @@ async function bootstrap() {
   await app.listen(port)
 
   const taskService = app.get(TaskService)
-  await taskService.addCronJobs()
+  // await taskService.addCronJobs()
+  await taskService.addConfigurableCronJobs()
 }
 bootstrap()
   .then(() => console.log('Application started successfully'))

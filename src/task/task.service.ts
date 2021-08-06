@@ -2,8 +2,17 @@ import { ConfigService } from '@nestjs/config'
 import { HttpService, Injectable } from '@nestjs/common'
 import { SchedulerRegistry } from '@nestjs/schedule'
 import { CronJob } from 'cron'
+import { Method } from 'axios'
 
 const defaultInterval = '* * * * * *'
+
+interface JobConfiguration {
+  url: string
+  interval: string
+  method: Method
+  dataFn: (...args: unknown[]) => any
+  name: string
+}
 
 @Injectable()
 export class TaskService {
@@ -11,6 +20,8 @@ export class TaskService {
   private readonly patchJobInterval: string
   private readonly putJobInterval: string
   private readonly baseUrl: string
+
+  private jobConfigurations: JobConfiguration[] = []
 
   constructor(
     private httpService: HttpService,
@@ -21,6 +32,42 @@ export class TaskService {
     this.patchJobInterval = this.configService.get<string>('PATCH_JOB_INTERVAL', defaultInterval)
     this.putJobInterval = this.configService.get<string>('PUT_JOB_INTERVAL', defaultInterval)
     this.baseUrl = this.configService.get<string>('BASE_URL', '')
+
+    this.jobConfigurations = [
+      {
+        url: `${this.baseUrl}/post-job`,
+        interval: this.postJobInterval,
+        method: 'POST',
+        dataFn: () => ({
+          name: 'connie',
+          msg: 'schedule dynamic post job every 15 second',
+          timestamp: Date.now(),
+        }),
+        name: 'post-job2',
+      },
+      {
+        url: `${this.baseUrl}/patch-job`,
+        interval: this.patchJobInterval,
+        method: 'PATCH',
+        dataFn: () => ({
+          name: 'mary',
+          msg: 'schedule dynamic patch job every 20 second',
+          timestamp: Date.now(),
+        }),
+        name: 'patch-job2',
+      },
+      {
+        url: `${this.baseUrl}/put-job`,
+        interval: this.putJobInterval,
+        method: 'PUT',
+        dataFn: () => ({
+          name: 'job',
+          msg: 'schedule dynamic put job every 30 second',
+          timestamp: Date.now(),
+        }),
+        name: 'put-job2',
+      },
+    ]
   }
 
   // @Cron('*/15 * * * * *')
@@ -117,5 +164,33 @@ export class TaskService {
     postJob.start()
     patchJob.start()
     putJob.start()
+  }
+
+  addConfigurableCronJobs(): void {
+    const callbackGenerator = (configuration: JobConfiguration, args?: unknown[]) => {
+      const { url, method, dataFn } = configuration
+      const data = args ? dataFn(args) : dataFn()
+      return async () => {
+        try {
+          await this.httpService
+            .request({
+              url,
+              method,
+              data,
+            })
+            .toPromise()
+        } catch (err) {
+          console.error(err)
+        }
+      }
+    }
+
+    for (const configuration of this.jobConfigurations) {
+      const { interval, name } = configuration
+      const callback = callbackGenerator(configuration)
+      const cronjob = new CronJob(interval, callback)
+      this.schedulerRegistry.addCronJob(name, cronjob)
+      cronjob.start()
+    }
   }
 }
