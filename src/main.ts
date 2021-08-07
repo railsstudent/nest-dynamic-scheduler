@@ -7,7 +7,7 @@ import * as express from 'express'
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module'
-import { TaskService } from './task/task.service'
+import { TaskService } from './task'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)

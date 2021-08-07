@@ -66,7 +66,7 @@ export class TaskService {
   // async handlePostJob(): Promise<void> {
   //   try {
   //     await this.httpService
-  //       .post('http://localhost:3000/post-job', {
+  //       .post(`${this.baseUrl}/post-job`, {
   //         name: 'connie',
   //         msg: 'schedule post job every 15 second',
   //         timestamp: Date.now(),
@@ -81,7 +81,7 @@ export class TaskService {
   // async handlePatchJob(): Promise<void> {
   //   try {
   //     await this.httpService
-  //       .patch('http://localhost:3000/patch-job', {
+  //       .patch(`${this.baseUrl}/patch-job`, {
   //         name: 'connie',
   //         msg: 'schedule patch job every 20 second',
   //         timestamp: Date.now(),
@@ -96,7 +96,7 @@ export class TaskService {
   // async handlePutJob(): Promise<void> {
   //   try {
   //     await this.httpService
-  //       .put('http://localhost:3000/put-job', {
+  //       .put(`${this.baseUrl}/put-job`, {
   //         name: 'connie',
   //         msg: 'schedule put job every 30 second',
   //         timestamp: Date.now(),
