@@ -3,10 +3,6 @@ import { SimpleJob } from './dtos'
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!'
-  }
-
   printMessage(identifier: string, job: SimpleJob): void {
     const { name, msg, timestamp } = job
     const date = new Date(timestamp)
