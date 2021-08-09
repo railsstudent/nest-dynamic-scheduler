@@ -1,4 +1,4 @@
-import { HttpModule, Module } from '@nestjs/common'
+import { HttpModule, Module, OnModuleInit } from '@nestjs/common'
 import { ScheduleModule } from '@nestjs/schedule'
 import { TaskService } from './task.service'
 
@@ -7,4 +7,15 @@ import { TaskService } from './task.service'
   providers: [TaskService],
   controllers: [],
 })
-export class TaskModule {}
+export class TaskModule implements OnModuleInit {
+  constructor(private taskService: TaskService) {}
+
+  async onModuleInit() {
+    // await taskService.addCronJobs()
+    await this.taskService.addConfigurableCronJobs()
+  }
+
+  async onModuleDestroy() {
+    await this.taskService.deleteConfigurableCronJobs()
+  }
+}

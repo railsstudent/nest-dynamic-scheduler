@@ -184,4 +184,11 @@ export class TaskService {
       cronjob.start()
     }
   }
+
+  deleteConfigurableCronJobs(): void {
+    for (const configuration of this.jobConfigurations) {
+      const { name } = configuration
+      this.schedulerRegistry.deleteCronJob(name)
+    }
+  }
 }

@@ -7,7 +7,6 @@ import * as express from 'express'
 import { ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module'
-import { TaskService } from './task'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -23,13 +22,12 @@ async function bootstrap() {
     }),
   )
 
+  // Starts listening for shutdown hooks
+  app.enableShutdownHooks()
+
   const configService = app.get(ConfigService)
   const port = configService.get<number>('PORT', 0)
   await app.listen(port)
-
-  const taskService = app.get(TaskService)
-  // await taskService.addCronJobs()
-  await taskService.addConfigurableCronJobs()
 }
 bootstrap()
   .then(() => console.log('Application started successfully'))
