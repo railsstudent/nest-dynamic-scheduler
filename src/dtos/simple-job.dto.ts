@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator'
 
-export class SimpleJob {
+export class SimpleJobDto {
   @IsString()
   @IsNotEmpty()
   name: string
